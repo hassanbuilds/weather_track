@@ -58,159 +58,162 @@ class WeatherScreeen extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
                 SizedBox(height: 16),
-                Row(
-                  children: [
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      elevation: 6,
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '03:00',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Card(
+                        elevation: 6,
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '03:00',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Icon(Icons.cloud, size: 32),
-                            const SizedBox(height: 8),
-                            Text('320.21'),
-                          ],
+                              const SizedBox(height: 8),
+                              Icon(Icons.cloud, size: 32),
+                              const SizedBox(height: 8),
+                              Text('320.21'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 Placeholder(fallbackHeight: 150),
