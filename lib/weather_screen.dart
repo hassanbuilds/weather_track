@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:weather_track/hourly_forecast_item.dart';
 
 class WeatherScreeen extends StatelessWidget {
   const WeatherScreeen({super.key});
@@ -62,163 +63,34 @@ class WeatherScreeen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 6,
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '03:00',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Icon(Icons.cloud, size: 32),
-                              const SizedBox(height: 8),
-                              Text('320.21'),
-                            ],
-                          ),
-                        ),
-                      ),
+                      HourlyForeCastItem(),
+                      HourlyForeCastItem(),
+                      HourlyForeCastItem(),
+                      HourlyForeCastItem(),
+                      HourlyForeCastItem(),
+                      HourlyForeCastItem(),
                     ],
                   ),
                 ),
-
-                Placeholder(fallbackHeight: 150),
                 SizedBox(height: 20),
-                Placeholder(fallbackHeight: 150),
+                Text(
+                  'Additional Information',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        Icon(Icons.water_drop, size: 32),
+                        SizedBox(height: 8),
+                        Text('Humidity'),
+                        SizedBox(height: 8),
+                        Text('91', style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
