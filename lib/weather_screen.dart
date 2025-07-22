@@ -22,6 +22,7 @@ class WeatherScreeen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Main card
                 SizedBox(
@@ -52,6 +53,13 @@ class WeatherScreeen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
+                const Text(
+                  'Weather Forecast',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
+                SizedBox(height: 20),
+                Row(children: [Card(child: Column())]),
+
                 Placeholder(fallbackHeight: 150),
                 SizedBox(height: 20),
                 Placeholder(fallbackHeight: 150),
