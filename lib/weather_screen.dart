@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class WeatherScreeen extends StatelessWidget {
@@ -14,16 +15,50 @@ class WeatherScreeen extends StatelessWidget {
         centerTitle: true,
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.refresh))],
       ),
-      body: Column(
-        children: [
-          // main card
-          const Placeholder(fallbackHeight: 250),
-          const SizedBox(height: 25),
-          // Weather forecast cards
-          const Placeholder(fallbackHeight: 150),
-          const SizedBox(height: 20),
-          const Placeholder(fallbackHeight: 150),
-        ],
+      body: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Main card
+                SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 14,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: const [
+                          Text(
+                            '300°F',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Icon(Icons.cloud, size: 64),
+                          SizedBox(height: 16),
+                          Text('Rain', style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Placeholder(fallbackHeight: 150),
+                SizedBox(height: 20),
+                Placeholder(fallbackHeight: 150),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
