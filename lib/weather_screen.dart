@@ -76,7 +76,7 @@ class WeatherScreeen extends StatelessWidget {
                       ),
                       HourlyForeCastItem(
                         time: '06:00',
-                        icon: Icons.sunny,
+                        icon: Icons.brightness_4,
                         temperature: '301.22',
                       ),
                       HourlyForeCastItem(
