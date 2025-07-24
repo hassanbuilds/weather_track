@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:weather_track/scerets.dart';
 import 'hourly_forecast_item.dart';
 import 'additional_info_item.dart';
+import 'package:http/http.dart' as http;
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -14,6 +16,22 @@ class WeatherScreen extends StatefulWidget {
 class _WeatherScreenState extends State<WeatherScreen> {
   bool _isRefreshing = false;
   bool _is3DTouchActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentWeather();
+  }
+
+  Future<void> getCurrentWeather() async {
+    String cityName = 'Lahore';
+    final res = await http.get(
+      Uri.parse(
+        'http://api.openweathermap.org/data/2.5/weather?q=$cityName,pk&APPID=$openWetherAPIKey',
+      ),
+    );
+    print(res.body);
+  }
 
   Future<void> _refreshData() async {
     setState(() => _isRefreshing = true);
