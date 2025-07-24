@@ -6,34 +6,23 @@ void main() {
   runApp(const WeatherApp());
 }
 
-class WeatherApp extends StatefulWidget {
+class WeatherApp extends StatelessWidget {
   const WeatherApp({super.key});
-
-  @override
-  State<WeatherApp> createState() => _WeatherAppState();
-}
-
-class _WeatherAppState extends State<WeatherApp> {
-  bool isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Weather UI',
       theme: ThemeData(
-        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        brightness: Brightness.light,
         textTheme: GoogleFonts.poppinsTextTheme(),
-        scaffoldBackgroundColor:
-            isDarkMode ? Colors.grey[900] : Colors.grey[100],
+        scaffoldBackgroundColor: Colors.blue.shade50, // Light blue background
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue.shade800, // Dark blue app bar
+          foregroundColor: Colors.white, // White text/icons
+        ),
       ),
-      home: WeatherScreen(
-        isDarkMode: isDarkMode,
-        onToggleTheme: () {
-          setState(() {
-            isDarkMode = !isDarkMode;
-          });
-        },
-      ),
+      home: const WeatherScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

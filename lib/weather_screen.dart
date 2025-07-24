@@ -4,19 +4,27 @@ import 'package:weather_icons/weather_icons.dart';
 import 'hourly_forecast_item.dart';
 import 'additional_info_item.dart';
 
-class WeatherScreen extends StatelessWidget {
-  final bool isDarkMode;
-  final VoidCallback onToggleTheme;
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({super.key});
 
-  const WeatherScreen({
-    super.key,
-    required this.isDarkMode,
-    required this.onToggleTheme,
-  });
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
 
-  Future<void> _handleWeatherCardPress() async {
-    await HapticFeedback.mediumImpact();
-    // You could add additional functionality here
+class _WeatherScreenState extends State<WeatherScreen> {
+  bool _isRefreshing = false;
+  bool _is3DTouchActive = false;
+
+  Future<void> _refreshData() async {
+    setState(() => _isRefreshing = true);
+    await HapticFeedback.lightImpact();
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() => _isRefreshing = false);
+  }
+
+  void _handle3DTouch(bool active) {
+    setState(() => _is3DTouchActive = active);
+    HapticFeedback.mediumImpact();
   }
 
   @override
@@ -24,101 +32,124 @@ class WeatherScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather App'),
-        centerTitle: true,
+        backgroundColor: Colors.deepPurple.shade800,
         actions: [
           IconButton(
-            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              onToggleTheme();
-            },
+            icon:
+                _isRefreshing
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Icon(Icons.refresh, color: Colors.white),
+            onPressed: _isRefreshing ? null : _refreshData,
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 8),
-
-              // 🌆 City Name
-              Center(
-                child: Text(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1A0033), Color(0xFF330066)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                const Text(
                   'Lahore',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // 🌤 Main Weather Card with 3D Touch
-              GestureDetector(
-                onTap: _handleWeatherCardPress,
-                onLongPress: () async {
-                  await HapticFeedback.heavyImpact();
-                  // Add long press functionality
-                },
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: AnimatedContainer(
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () => HapticFeedback.lightImpact(),
+                  onLongPress: () => HapticFeedback.heavyImpact(),
+                  onLongPressStart: (_) => _handle3DTouch(true),
+                  onLongPressEnd: (_) => _handle3DTouch(false),
+                  child: AnimatedScale(
+                    scale: _is3DTouchActive ? 0.95 : 1.0,
                     duration: const Duration(milliseconds: 200),
-                    transform: Matrix4.identity()..scale(1.0),
-                    transformAlignment: Alignment.center,
                     child: Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors:
-                              isDarkMode
-                                  ? [
-                                    Colors.deepPurple.shade700,
-                                    Colors.deepPurple.shade400,
-                                  ]
-                                  : [
-                                    Colors.blue.shade300,
-                                    Colors.blue.shade100,
-                                  ],
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF4B0082), Color(0xFF800080)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(4, 4),
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
                         ],
+                        border: Border.all(
+                          color: Colors.purpleAccent.withOpacity(0.3),
+                        ),
                       ),
                       padding: const EdgeInsets.all(24),
                       child: Column(
                         children: [
-                          const BoxedIcon(
-                            WeatherIcons.day_sunny,
-                            size: 64,
-                            color: Colors.amber,
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.amber.withOpacity(0.6),
+                                  blurRadius: 20,
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: const BoxedIcon(
+                              WeatherIcons.day_sunny,
+                              size: 72,
+                              color: Colors.amber,
+                            ),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
-                            '36°C',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white.withOpacity(0.15),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                            ),
+                            child: const Text(
+                              '36°C',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
+                          const Text(
                             'Sunny',
                             style: TextStyle(
-                              fontSize: 20,
-                              color:
-                                  isDarkMode
-                                      ? Colors.grey.shade300
-                                      : Colors.grey.shade800,
+                              fontSize: 22,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Today, 3:45 PM',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                              fontStyle: FontStyle.italic,
                             ),
                           ),
                         ],
@@ -126,107 +157,94 @@ class WeatherScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 12),
-
-              // 🌡️ Feels Like Text
-              const Text(
-                'Feels like 38°C',
-                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              ),
-
-              const SizedBox(height: 32),
-
-              // 🔮 Weather Forecast Title
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Weather Forecast',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                const SizedBox(height: 12),
+                const Text(
+                  'Feels like 38°C',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white70,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-
-              // 🕓 Hourly Forecast Row
-              SizedBox(
-                height: 130,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
+                const SizedBox(height: 32),
+                _buildSectionTitle('Weather Forecast'),
+                SizedBox(
+                  height: 130,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      HourlyForecastItem(
+                        time: '6 AM',
+                        icon: WeatherIcons.night_clear,
+                        temperature: '24°C',
+                      ),
+                      HourlyForecastItem(
+                        time: '9 AM',
+                        icon: WeatherIcons.day_sunny,
+                        temperature: '28°C',
+                      ),
+                      HourlyForecastItem(
+                        time: '12 PM',
+                        icon: WeatherIcons.day_sunny,
+                        temperature: '32°C',
+                      ),
+                      HourlyForecastItem(
+                        time: '3 PM',
+                        icon: WeatherIcons.day_sunny,
+                        temperature: '35°C',
+                      ),
+                      HourlyForecastItem(
+                        time: '6 PM',
+                        icon: WeatherIcons.day_cloudy,
+                        temperature: '33°C',
+                      ),
+                      HourlyForecastItem(
+                        time: '9 PM',
+                        icon: WeatherIcons.night_clear,
+                        temperature: '29°C',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _buildSectionTitle('Additional Information'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
-                    HourlyForecastItem(
-                      time: '6 AM',
-                      icon: WeatherIcons.night_clear,
-                      temperature: '24°C',
+                    AdditionalInfoItem(
+                      icon: Icons.water_drop,
+                      label: 'Humidity',
+                      value: '82%',
                     ),
-                    HourlyForecastItem(
-                      time: '9 AM',
-                      icon: WeatherIcons.day_sunny,
-                      temperature: '28°C',
+                    AdditionalInfoItem(
+                      icon: Icons.air,
+                      label: 'Wind',
+                      value: '14 km/h',
                     ),
-                    HourlyForecastItem(
-                      time: '12 PM',
-                      icon: WeatherIcons.day_sunny,
-                      temperature: '32°C',
-                    ),
-                    HourlyForecastItem(
-                      time: '3 PM',
-                      icon: WeatherIcons.day_sunny,
-                      temperature: '35°C',
-                    ),
-                    HourlyForecastItem(
-                      time: '6 PM',
-                      icon: WeatherIcons.day_cloudy,
-                      temperature: '33°C',
-                    ),
-                    HourlyForecastItem(
-                      time: '9 PM',
-                      icon: WeatherIcons.night_clear,
-                      temperature: '29°C',
+                    AdditionalInfoItem(
+                      icon: Icons.speed,
+                      label: 'Pressure',
+                      value: '1012 hPa',
                     ),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // ℹ️ Additional Information Title
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Additional Information',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // 💧 Additional Info Row (3D styled items)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  AdditionalInfoItem(
-                    icon: Icons.water_drop,
-                    label: 'Humidity',
-                    value: '82%',
-                  ),
-                  AdditionalInfoItem(
-                    icon: Icons.air,
-                    label: 'Wind',
-                    value: '14 km/h',
-                  ),
-                  AdditionalInfoItem(
-                    icon: Icons.speed,
-                    label: 'Pressure',
-                    value: '1012 hPa',
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 24),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildSectionTitle(String text) => Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+  );
 }
