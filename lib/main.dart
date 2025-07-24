@@ -1,19 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:weather_track/weather_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'weather_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const WeatherApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WeatherApp extends StatefulWidget {
+  const WeatherApp({super.key});
+
+  @override
+  State<WeatherApp> createState() => _WeatherAppState();
+}
+
+class _WeatherAppState extends State<WeatherApp> {
+  bool isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Weather UI',
+      theme: ThemeData(
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        scaffoldBackgroundColor:
+            isDarkMode ? Colors.grey[900] : Colors.grey[100],
+      ),
+      home: WeatherScreen(
+        isDarkMode: isDarkMode,
+        onToggleTheme: () {
+          setState(() {
+            isDarkMode = !isDarkMode;
+          });
+        },
+      ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true),
-      home: const WeatherScreeen(),
     );
   }
 }

@@ -1,125 +1,229 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:weather_track/additional_info_item.dart';
-import 'package:weather_track/hourly_forecast_item.dart';
+import 'package:flutter/services.dart';
+import 'package:weather_icons/weather_icons.dart';
+import 'hourly_forecast_item.dart';
+import 'additional_info_item.dart';
 
-class WeatherScreeen extends StatelessWidget {
-  const WeatherScreeen({super.key});
+class WeatherScreen extends StatelessWidget {
+  final bool isDarkMode;
+  final VoidCallback onToggleTheme;
+
+  const WeatherScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.onToggleTheme,
+  });
+
+  Future<void> _handleWeatherCardPress() async {
+    await HapticFeedback.mediumImpact();
+    // You could add additional functionality here
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Weather App',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text('Weather App'),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.refresh))],
+        actions: [
+          IconButton(
+            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              onToggleTheme();
+            },
+          ),
+        ],
       ),
-      body: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Main card
-                SizedBox(
-                  width: double.infinity,
-                  child: Card(
-                    elevation: 14,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 8),
+
+              // 🌆 City Name
+              Center(
+                child: Text(
+                  'Lahore',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 🌤 Main Weather Card with 3D Touch
+              GestureDetector(
+                onTap: _handleWeatherCardPress,
+                onLongPress: () async {
+                  await HapticFeedback.heavyImpact();
+                  // Add long press functionality
+                },
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    transform: Matrix4.identity()..scale(1.0),
+                    transformAlignment: Alignment.center,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors:
+                              isDarkMode
+                                  ? [
+                                    Colors.deepPurple.shade700,
+                                    Colors.deepPurple.shade400,
+                                  ]
+                                  : [
+                                    Colors.blue.shade300,
+                                    Colors.blue.shade100,
+                                  ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(4, 4),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(24),
                       child: Column(
-                        children: const [
-                          Text(
-                            '300°K',
+                        children: [
+                          const BoxedIcon(
+                            WeatherIcons.day_sunny,
+                            size: 64,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            '36°C',
                             style: TextStyle(
-                              fontSize: 32,
+                              fontSize: 48,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 16),
-                          Icon(Icons.cloud, size: 64),
-                          SizedBox(height: 16),
-                          Text('Rain', style: TextStyle(fontSize: 20)),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Sunny',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color:
+                                  isDarkMode
+                                      ? Colors.grey.shade300
+                                      : Colors.grey.shade800,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                const Text(
+              ),
+
+              const SizedBox(height: 12),
+
+              // 🌡️ Feels Like Text
+              const Text(
+                'Feels like 38°C',
+                style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+
+              const SizedBox(height: 32),
+
+              // 🔮 Weather Forecast Title
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
                   'Weather Forecast',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
-                SingleChildScrollView(
+              ),
+              const SizedBox(height: 12),
+
+              // 🕓 Hourly Forecast Row
+              SizedBox(
+                height: 130,
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      HourlyForeCastItem(
-                        time: '00:00',
-                        icon: Icons.brightness_7,
-                        temperature: '301.22',
-                      ),
-                      HourlyForeCastItem(
-                        time: '03:00',
-                        icon: Icons.sunny,
-                        temperature: '300.52',
-                      ),
-                      HourlyForeCastItem(
-                        time: '06:00',
-                        icon: Icons.brightness_4,
-                        temperature: '301.22',
-                      ),
-                      HourlyForeCastItem(
-                        time: '09:00',
-                        icon: Icons.brightness_2_sharp,
-                        temperature: '301.22',
-                      ),
-                      HourlyForeCastItem(
-                        time: '12:00',
-                        icon: Icons.brightness_3,
-                        temperature: '300.12',
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Additional Information',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AdditionalInfoItem(
-                      icon: Icons.water_drop,
-                      label: 'Humidity',
-                      value: '91',
+                  children: const [
+                    HourlyForecastItem(
+                      time: '6 AM',
+                      icon: WeatherIcons.night_clear,
+                      temperature: '24°C',
                     ),
-                    AdditionalInfoItem(
-                      icon: Icons.air,
-                      label: 'Wind Speed',
-                      value: '7.5',
+                    HourlyForecastItem(
+                      time: '9 AM',
+                      icon: WeatherIcons.day_sunny,
+                      temperature: '28°C',
                     ),
-                    AdditionalInfoItem(
-                      icon: Icons.beach_access,
-                      label: 'Pressure',
-                      value: '1000',
+                    HourlyForecastItem(
+                      time: '12 PM',
+                      icon: WeatherIcons.day_sunny,
+                      temperature: '32°C',
+                    ),
+                    HourlyForecastItem(
+                      time: '3 PM',
+                      icon: WeatherIcons.day_sunny,
+                      temperature: '35°C',
+                    ),
+                    HourlyForecastItem(
+                      time: '6 PM',
+                      icon: WeatherIcons.day_cloudy,
+                      temperature: '33°C',
+                    ),
+                    HourlyForecastItem(
+                      time: '9 PM',
+                      icon: WeatherIcons.night_clear,
+                      temperature: '29°C',
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // ℹ️ Additional Information Title
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Additional Information',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // 💧 Additional Info Row (3D styled items)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  AdditionalInfoItem(
+                    icon: Icons.water_drop,
+                    label: 'Humidity',
+                    value: '82%',
+                  ),
+                  AdditionalInfoItem(
+                    icon: Icons.air,
+                    label: 'Wind',
+                    value: '14 km/h',
+                  ),
+                  AdditionalInfoItem(
+                    icon: Icons.speed,
+                    label: 'Pressure',
+                    value: '1012 hPa',
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+            ],
           ),
         ),
       ),
