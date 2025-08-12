@@ -16,10 +16,10 @@ class WeatherApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         textTheme: GoogleFonts.poppinsTextTheme(),
-        scaffoldBackgroundColor: Colors.blue.shade50, // Light blue background
+        scaffoldBackgroundColor: Colors.blue.shade50,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue.shade800, // Dark blue app bar
-          foregroundColor: Colors.white, // White text/icons
+          backgroundColor: Colors.blue.shade800,
+          foregroundColor: Colors.white,
         ),
       ),
       home: const WeatherScreen(),
