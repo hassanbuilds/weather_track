@@ -293,17 +293,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 16),
-
-                // Weather description
-                const Center(
-                  child: Text(
-                    'Sunny conditions will continue all day. Wind gusts are up to 12 km/h.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 20),
 
                 // Hourly forecast section with dark background - UPDATED
                 Container(
@@ -319,7 +309,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(left: 8, bottom: 12),
+                        padding: EdgeInsets.only(left: 10, bottom: 12),
+                        child: Text(
+                          'Sunny conditions will continue all day. Wind gusts are up to 12 km/h.',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10, bottom: 8),
                         child: Text(
                           'HOURLY FORECAST',
                           style: TextStyle(
@@ -330,7 +327,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 90, // Reduced height for better spacing
+                        height: 90,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: hourlyForecast.length,
