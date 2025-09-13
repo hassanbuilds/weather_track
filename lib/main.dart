@@ -15,11 +15,22 @@ class WeatherApp extends StatelessWidget {
       title: 'Weather UI',
       theme: ThemeData(
         brightness: Brightness.light,
-        textTheme: GoogleFonts.poppinsTextTheme(),
-        scaffoldBackgroundColor: Colors.blue.shade50,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue.shade800,
+        textTheme:
+            GoogleFonts.poppinsTextTheme(), // Use Poppins font as in screenshot
+        scaffoldBackgroundColor: const Color(
+          0xFF87CEFA,
+        ), // Light blue gradient start
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF4682B4), // Deep blue for AppBar
           foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white.withOpacity(0.15), // Transparent cards as in UI
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
         ),
       ),
       home: const WeatherScreen(),
