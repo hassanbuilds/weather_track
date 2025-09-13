@@ -27,17 +27,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
     getWeatherData();
   }
 
-  List<Map<String, dynamic>> _getNextSevenDays() {
-    // Create a list of 7 unique days
-    List<String> dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  List<Map<String, dynamic>> _getNextTenDays() {
+    // Create a list of 10 days with Today + next 9 days
+    List<String> dayNames = [
+      'Today',
+      'Tue',
+      'Wed',
+      'Thu',
+      'Fri',
+      'Sat',
+      'Sun',
+      'Mon',
+      'Tue',
+      'Wed',
+    ];
+
+    // Temperature data matching your screenshot
+    List<int> lowTemps = [61, 59, 59, 63, 65, 67, 69, 71, 73, 75];
+    List<int> highTemps = [87, 85, 91, 95, 93, 91, 89, 87, 85, 83];
 
     List<Map<String, dynamic>> days = [];
-    for (int i = 0; i < 7; i++) {
-      // Sample temperature data
+    for (int i = 0; i < 10; i++) {
       days.add({
         'day': dayNames[i],
-        'low': 15 + i,
-        'high': 30 + i,
+        'low': lowTemps[i],
+        'high': highTemps[i],
         'icon': '01d',
       });
     }
@@ -62,8 +76,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           currentWeather = data['list'][0];
           hourlyForecast = data['list'].sublist(0, 6);
 
-          // Get 7 days for the forecast
-          dailyForecast = _getNextSevenDays();
+          // Get 10 days for the forecast
+          dailyForecast = _getNextTenDays();
         });
       } else {
         debugPrint("Error fetching weather: Status Code ${res.statusCode}");
@@ -73,9 +87,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         setState(() {
           currentWeather = {
             'main': {
-              'temp': 22,
-              'temp_max': 31,
-              'temp_min': 16,
+              'temp': 72,
+              'temp_max': 87,
+              'temp_min': 61,
               'humidity': 45,
               'pressure': 1013,
             },
@@ -88,15 +102,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
             6,
             (index) => {
               'dt_txt': '2023-01-01 ${10 + index}:00:00',
-              'main': {'temp': 22 + index * 2},
+              'main': {'temp': 72 + index * 2},
               'weather': [
                 {'icon': '01d'},
               ],
             },
           );
 
-          // Get 7 days for the forecast
-          dailyForecast = _getNextSevenDays();
+          // Get 10 days for the forecast
+          dailyForecast = _getNextTenDays();
         });
       }
     } catch (e) {
@@ -106,9 +120,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
       setState(() {
         currentWeather = {
           'main': {
-            'temp': 22,
-            'temp_max': 31,
-            'temp_min': 16,
+            'temp': 72,
+            'temp_max': 87,
+            'temp_min': 61,
             'humidity': 45,
             'pressure': 1013,
           },
@@ -121,15 +135,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
           6,
           (index) => {
             'dt_txt': '2023-01-01 ${10 + index}:00:00',
-            'main': {'temp': 22 + index * 2},
+            'main': {'temp': 72 + index * 2},
             'weather': [
               {'icon': '01d'},
             ],
           },
         );
 
-        // Get 7 days for the forecast
-        dailyForecast = _getNextSevenDays();
+        // Get 10 days for the forecast
+        dailyForecast = _getNextTenDays();
       });
     }
   }
@@ -303,67 +317,91 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // Hourly forecast
-                const Text(
-                  'HOURLY FORECAST',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
+                // Hourly forecast section with dark background
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 110,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: hourlyForecast.length,
-                    itemBuilder: (context, index) {
-                      final forecast = hourlyForecast[index];
-                      final time = forecast['dt_txt']
-                          .toString()
-                          .split(' ')[1]
-                          .substring(0, 5);
-                      final hour = time.split(':')[0];
-                      final displayTime =
-                          index == 0
-                              ? 'Now'
-                              : '${int.parse(hour) % 12}${int.parse(hour) >= 12 ? 'PM' : 'AM'}';
-                      final temp = forecast['main']['temp'].round();
-                      final icon = mapWeatherIcon(
-                        forecast['weather'][0]['icon'],
-                      );
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'HOURLY FORECAST',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 110,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: hourlyForecast.length,
+                          itemBuilder: (context, index) {
+                            final forecast = hourlyForecast[index];
+                            final time = forecast['dt_txt']
+                                .toString()
+                                .split(' ')[1]
+                                .substring(0, 5);
+                            final hour = time.split(':')[0];
+                            final displayTime =
+                                index == 0
+                                    ? 'Now'
+                                    : '${int.parse(hour) % 12}${int.parse(hour) >= 12 ? 'PM' : 'AM'}';
+                            final temp = forecast['main']['temp'].round();
+                            final icon = mapWeatherIcon(
+                              forecast['weather'][0]['icon'],
+                            );
 
-                      return HourlyForecastItem(
-                        time: displayTime,
-                        icon: icon,
-                        temperature: '$temp°',
-                      );
-                    },
+                            return HourlyForecastItem(
+                              time: displayTime,
+                              icon: icon,
+                              temperature: '$temp°',
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 20),
 
-                // 7-Day Forecast (changed from 10-DAY)
-                const Text(
-                  '7-DAY FORECAST',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
+                // 10-Day Forecast section with dark background
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Column(
-                  children:
-                      dailyForecast.map((dayData) {
-                        return DailyForecastItem(
-                          day: dayData['day'],
-                          lowTemp: dayData['low'],
-                          highTemp: dayData['high'],
-                          icon: mapWeatherIcon(dayData['icon']),
-                        );
-                      }).toList(),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '10-DAY FORECAST',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Column(
+                        children:
+                            dailyForecast.map((dayData) {
+                              return DailyForecastItem(
+                                day: dayData['day'],
+                                lowTemp: dayData['low'],
+                                highTemp: dayData['high'],
+                                icon: mapWeatherIcon(dayData['icon']),
+                              );
+                            }).toList(),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 20),

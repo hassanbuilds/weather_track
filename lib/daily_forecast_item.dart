@@ -26,7 +26,7 @@ class DailyForecastItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: 80,
+            width: 60,
             child: Text(
               day,
               style: const TextStyle(
@@ -38,7 +38,7 @@ class DailyForecastItem extends StatelessWidget {
           ),
           BoxedIcon(icon, color: Colors.yellowAccent, size: 24),
           SizedBox(
-            width: 80,
+            width: 100,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -50,7 +50,9 @@ class DailyForecastItem extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+                const SizedBox(width: 8),
                 Text(
                   '$lowTemp°',
                   style: const TextStyle(fontSize: 16, color: Colors.white70),
