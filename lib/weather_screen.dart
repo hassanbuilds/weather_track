@@ -27,27 +27,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
     getWeatherData();
   }
 
-  List<Map<String, dynamic>> _getNextTenDays() {
-    // Create a list of 10 days with Today + next 9 days
-    List<String> dayNames = [
-      'Today',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat',
-      'Sun',
-      'Mon',
-      'Tue',
-      'Wed',
-    ];
+  List<Map<String, dynamic>> _getNextSevenDays() {
+    // Create a list of 7 days of the week
+    List<String> dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-    // Temperature data matching your screenshot
-    List<int> lowTemps = [61, 59, 59, 63, 65, 67, 69, 71, 73, 75];
-    List<int> highTemps = [87, 85, 91, 95, 93, 91, 89, 87, 85, 83];
+    // Temperature data
+    List<int> lowTemps = [59, 59, 59, 63, 65, 67, 69];
+    List<int> highTemps = [85, 91, 95, 93, 91, 89, 87];
 
     List<Map<String, dynamic>> days = [];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 7; i++) {
       days.add({
         'day': dayNames[i],
         'low': lowTemps[i],
@@ -76,8 +65,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           currentWeather = data['list'][0];
           hourlyForecast = data['list'].sublist(0, 6);
 
-          // Get 10 days for the forecast
-          dailyForecast = _getNextTenDays();
+          // Get 7 days for the forecast
+          dailyForecast = _getNextSevenDays();
         });
       } else {
         debugPrint("Error fetching weather: Status Code ${res.statusCode}");
@@ -109,8 +98,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
             },
           );
 
-          // Get 10 days for the forecast
-          dailyForecast = _getNextTenDays();
+          // Get 7 days for the forecast
+          dailyForecast = _getNextSevenDays();
         });
       }
     } catch (e) {
@@ -142,8 +131,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
           },
         );
 
-        // Get 10 days for the forecast
-        dailyForecast = _getNextTenDays();
+        // Get 7 days for the forecast
+        dailyForecast = _getNextSevenDays();
       });
     }
   }
@@ -370,7 +359,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // 10-Day Forecast section with dark background
+                // 7-Day Forecast section with dark background
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
@@ -381,7 +370,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        '10-DAY FORECAST',
+                        '7-DAY FORECAST',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white70,
