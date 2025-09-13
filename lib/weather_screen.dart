@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:weather_track/scerets.dart';
 import 'hourly_forecast_item.dart';
-import 'additional_info_item.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'daily_forecast_item.dart';
@@ -306,27 +305,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // Hourly forecast section with dark background
+                // Hourly forecast section with dark background - UPDATED
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 12,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'HOURLY FORECAST',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8, bottom: 12),
+                        child: Text(
+                          'HOURLY FORECAST',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 12),
                       SizedBox(
-                        height: 110,
+                        height: 90, // Reduced height for better spacing
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: hourlyForecast.length,
@@ -336,11 +340,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 .toString()
                                 .split(' ')[1]
                                 .substring(0, 5);
-                            final hour = time.split(':')[0];
-                            final displayTime =
-                                index == 0
-                                    ? 'Now'
-                                    : '${int.parse(hour) % 12}${int.parse(hour) >= 12 ? 'PM' : 'AM'}';
+                            final hour = int.parse(time.split(':')[0]);
+                            String displayTime;
+
+                            if (index == 0) {
+                              displayTime = 'Now';
+                            } else if (hour == 0) {
+                              displayTime = '12AM';
+                            } else if (hour < 12) {
+                              displayTime = '${hour}AM';
+                            } else if (hour == 12) {
+                              displayTime = '12PM';
+                            } else {
+                              displayTime = '${hour - 12}PM';
+                            }
+
                             final temp = forecast['main']['temp'].round();
                             final icon = mapWeatherIcon(
                               forecast['weather'][0]['icon'],
