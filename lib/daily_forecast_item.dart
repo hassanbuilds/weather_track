@@ -25,8 +25,8 @@ class DailyForecastItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 2,
+          SizedBox(
+            width: 80,
             child: Text(
               day,
               style: const TextStyle(
@@ -36,12 +36,9 @@ class DailyForecastItem extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: BoxedIcon(icon, color: Colors.yellowAccent, size: 24),
-          ),
-          Expanded(
-            flex: 2,
+          BoxedIcon(icon, color: Colors.yellowAccent, size: 24),
+          SizedBox(
+            width: 80,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
