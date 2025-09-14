@@ -214,8 +214,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text('Weather'),
-        backgroundColor: Colors.transparent,
+        title: const Text(''), // Empty title
+        backgroundColor: Color(0xFF5B8CFF), // Same as gradient start color
         elevation: 0,
         actions: [
           IconButton(
@@ -241,12 +241,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Location
                 const SizedBox(height: 10),
                 const Text(
-                  'MY LOCATION',
+                  'My Location',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
