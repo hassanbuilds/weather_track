@@ -207,7 +207,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
     final temp = currentWeather?['main']?['temp']?.round();
     final description = currentWeather?['weather']?[0]?['description'] ?? '';
-    final iconCode = currentWeather?['weather']?[0]?['icon'] ?? '';
     final highTemp = currentWeather?['main']?['temp_max']?.round();
     final lowTemp = currentWeather?['main']?['temp_min']?.round();
 
