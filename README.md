@@ -39,7 +39,13 @@
 <h2>📸 Screenshots</h2>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/your-screenshot.png" alt="Weather App Screenshot" width="300">
+<img width="395" height="851" alt="image" src="https://github.com/user-attachments/assets/18ad617c-02b1-4f93-8751-34f926e358d9" />
+<img width="390" height="845" alt="image" src="https://github.com/user-attachments/assets/d3f52e3a-8ff1-4949-a1ec-3655823f6697" />
+
+
+
+
+ 
 </p>
 
 ---
