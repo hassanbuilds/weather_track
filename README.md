@@ -70,17 +70,6 @@ flutter run</code></pre>
 
 ---
 
-<h2>🔮 Future Improvements</h2>
-
-<ul>
-  <li>🌙 Dark/Light Theme toggle</li>
-  <li>📍 GPS-based dynamic location detection</li>
-  <li>📅 Replace static <b>7-day forecast</b> with real API data</li>
-  <li>🌐 Multi-city support</li>
-  <li>🎞️ Animated transitions (weather-based backgrounds, smoother updates)</li>
-</ul>
-
----
 
 <h2>📜 License</h2>
 
