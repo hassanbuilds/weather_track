@@ -70,7 +70,7 @@ cd weather_app</code></pre>
   </li>
   <li>
     Run the app:
-    <pre><code>flutter pub 
+    <pre><code>flutter pub get
 flutter run</code></pre>
   </li>
 </ol>
