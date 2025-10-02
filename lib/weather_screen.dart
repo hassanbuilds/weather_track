@@ -202,7 +202,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Lahore, Pakistan', //  matches the API now
+                  'Lahore, Pakistan',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
