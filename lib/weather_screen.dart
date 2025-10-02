@@ -27,10 +27,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   List<Map<String, dynamic>> _getNextSevenDays() {
-    // Create a list of 7 days of the week
     List<String> dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-    // Temperature data
     List<int> lowTemps = [59, 59, 59, 63, 65, 67, 69];
     List<int> highTemps = [85, 91, 95, 93, 91, 89, 87];
 
@@ -48,9 +46,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> getWeatherData() async {
-    const cityName = 'Cupertino';
+    const cityName = 'Lahore'; // ✅ switched from Cupertino → Lahore
     final url = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/forecast?q=$cityName,us&appid=$openWeatherApiKey&units=metric',
+      'https://api.openweathermap.org/data/2.5/weather?q=$cityName,pk&appid=$openWeatherApiKey&units=metric',
     );
 
     try {
@@ -61,78 +59,30 @@ class _WeatherScreenState extends State<WeatherScreen> {
         debugPrint("API Response: ${data.toString()}");
 
         setState(() {
-          currentWeather = data['list'][0];
-          hourlyForecast = data['list'].sublist(0, 6);
+          // ✅ current weather now uses the correct API
+          currentWeather = data;
 
-          // Get 7 days for the forecast
+          // Dummy hourly forecast (until you switch to forecast API)
+          hourlyForecast = List.generate(
+            6,
+            (index) => {
+              'dt_txt': '2023-01-01 ${10 + index}:00:00',
+              'main': {'temp': (data['main']['temp'] + index).round()},
+              'weather': [
+                {'icon': data['weather'][0]['icon']},
+              ],
+            },
+          );
+
+          // Keep using your static 7-day dummy data
           dailyForecast = _getNextSevenDays();
         });
       } else {
         debugPrint("Error fetching weather: Status Code ${res.statusCode}");
         debugPrint("Response body: ${res.body}");
-
-        // Set fallback data if API fails
-        setState(() {
-          currentWeather = {
-            'main': {
-              'temp': 72,
-              'temp_max': 87,
-              'temp_min': 61,
-              'humidity': 45,
-              'pressure': 1013,
-            },
-            'weather': [
-              {'description': 'sunny', 'icon': '01d'},
-            ],
-            'wind': {'speed': 3.3},
-          };
-          hourlyForecast = List.generate(
-            6,
-            (index) => {
-              'dt_txt': '2023-01-01 ${10 + index}:00:00',
-              'main': {'temp': 72 + index * 2},
-              'weather': [
-                {'icon': '01d'},
-              ],
-            },
-          );
-
-          // Get 7 days for the forecast
-          dailyForecast = _getNextSevenDays();
-        });
       }
     } catch (e) {
       debugPrint("Exception fetching weather: $e");
-
-      // Set fallback data if exception occurs
-      setState(() {
-        currentWeather = {
-          'main': {
-            'temp': 72,
-            'temp_max': 87,
-            'temp_min': 61,
-            'humidity': 45,
-            'pressure': 1013,
-          },
-          'weather': [
-            {'description': 'sunny', 'icon': '01d'},
-          ],
-          'wind': {'speed': 3.3},
-        };
-        hourlyForecast = List.generate(
-          6,
-          (index) => {
-            'dt_txt': '2023-01-01 ${10 + index}:00:00',
-            'main': {'temp': 72 + index * 2},
-            'weather': [
-              {'icon': '01d'},
-            ],
-          },
-        );
-
-        // Get 7 days for the forecast
-        dailyForecast = _getNextSevenDays();
-      });
     }
   }
 
@@ -182,7 +132,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Show loading indicator if data is not loaded yet
     if (currentWeather == null) {
       return Scaffold(
         backgroundColor: Colors.transparent,
@@ -213,8 +162,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text(''), // Empty title
-        backgroundColor: Color(0xFF5B8CFF), // Same as gradient start color
+        title: const Text(''),
+        backgroundColor: const Color(0xFF5B8CFF),
         elevation: 0,
         actions: [
           IconButton(
@@ -242,7 +191,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Location
                 const SizedBox(height: 10),
                 const Text(
                   'My Location',
@@ -254,7 +202,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Lahore, Pakistan',
+                  'Lahore, Pakistan', // ✅ matches the API now
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -263,7 +211,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Main temperature
                 Center(
                   child: Text(
                     '${temp ?? '--'}°',
@@ -276,7 +223,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Weather condition
                 Center(
                   child: Text(
                     description.toUpperCase(),
@@ -285,7 +231,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 8),
 
-                // High/Low temperatures
                 Center(
                   child: Text(
                     'H:${highTemp ?? '--'}° L:${lowTemp ?? '--'}°',
@@ -294,7 +239,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Hourly forecast section with dark background - UPDATED
+                // Hourly forecast section
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
@@ -369,7 +314,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // 7-Day Forecast section with dark background
+                // 7-Day Forecast section
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
