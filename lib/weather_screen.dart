@@ -46,7 +46,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> getWeatherData() async {
-    const cityName = 'Lahore'; // ✅ switched from Cupertino → Lahore
+    const cityName = 'Lahore';
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?q=$cityName,pk&appid=$openWeatherApiKey&units=metric',
     );
