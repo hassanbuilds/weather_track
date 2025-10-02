@@ -59,10 +59,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         debugPrint("API Response: ${data.toString()}");
 
         setState(() {
-          // ✅ current weather now uses the correct API
           currentWeather = data;
 
-          // Dummy hourly forecast (until you switch to forecast API)
+          // Dummy hourly forecast
           hourlyForecast = List.generate(
             6,
             (index) => {
@@ -74,7 +73,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
             },
           );
 
-          // Keep using your static 7-day dummy data
           dailyForecast = _getNextSevenDays();
         });
       } else {
