@@ -62,19 +62,5 @@ cd weather_app</code></pre>
   <li>
     Add your API key:
     <ul>
-      <li>Get one from <a href="https://openweathermap.org/api">OpenWeatherMap</a>.</li>
-      <li>Create a file <code>secrets.dart</code> inside <code>lib/</code>:
-        <pre><code>const openWeatherApiKey = "YOUR_API_KEY_HERE";</code></pre>
-      </li>
-    </ul>
-  </li>
-  <li>
-    Run the app:
-    <pre><code>flutter pub get
-flutter run</code></pre>
-  </li>
-</ol>
-
----
-
+      
 
