@@ -55,12 +55,5 @@
 
 <ol>
   <li>
-    Clone the repo:
-    <pre><code>git clone https://github.com/your-username/weather_app.git
-cd weather_app</code></pre>
-  </li>
-  <li>
-    Add your API key:
-    <ul>
-      
+
 
