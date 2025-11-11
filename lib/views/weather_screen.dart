@@ -1,3 +1,5 @@
+// --- WEATHER SCREEN ---
+// All imports remain the same
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,9 @@ import 'package:weather_track/view_models/weather_view_model.dart';
 import 'daily_forecast_item.dart';
 import 'hourly_forecast_item.dart';
 import 'dart:math';
+
+// --- OFFLINE BANNER HEIGHT ---
+const double offlineBannerHeight = 30;
 
 // --- DYNAMIC GRADIENT FUNCTION ---
 LinearGradient getWeatherGradient(String main, bool isDay) {
@@ -160,7 +165,6 @@ class CloudEffect extends StatelessWidget {
   }
 }
 
-// --- IMPROVED RAIN EFFECT ---
 class RainEffect extends StatefulWidget {
   const RainEffect({super.key});
   @override
@@ -245,7 +249,6 @@ class RainPainter extends CustomPainter {
       canvas.drawLine(Offset(dx, dy), Offset(dx, dy + drop.length), paint);
     }
 
-    // Haze overlay for depth
     final haze =
         Paint()
           ..color = Colors.white.withOpacity(0.06)
@@ -372,8 +375,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 onPressed: () {
                   final cityName = _cityController.text.trim();
                   if (cityName.isNotEmpty) {
-                    vm.getWeatherData(city: cityName);
-                    Navigator.pop(context);
+                    if (vm.isOffline) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "You are offline. Try again when connected to the internet.",
+                          ),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      );
+                    } else {
+                      vm.getWeatherData(city: cityName);
+                      Navigator.pop(context);
+                    }
                   }
                 },
                 child: const Text("OK"),
@@ -464,7 +478,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ),
             body: Stack(
               children: [
-                // Background gradient
                 AnimatedContainer(
                   duration: const Duration(seconds: 1),
                   width: double.infinity,
@@ -473,222 +486,243 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     gradient: getWeatherGradient(mainWeather, isDay),
                   ),
                 ),
-
-                // Dynamic weather effects
                 WeatherEffect(mainWeather: mainWeather, isDay: isDay),
 
-                SafeArea(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.05,
-                      vertical: screenHeight * 0.02,
+                // ✅ OFFLINE BANNER (sticky)
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: vm.isOffline ? offlineBannerHeight : 0,
+                  child: Container(
+                    color: Colors.redAccent,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "You are offline",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // --- TOP WEATHER HEADER ---
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.025,
-                            vertical: screenHeight * 0.015,
+                  ),
+                ),
+
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: vm.isOffline ? offlineBannerHeight : 0,
+                    ),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: screenHeight * 0.02,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // --- TOP WEATHER HEADER ---
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.025,
+                              vertical: screenHeight * 0.015,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'My Location',
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.035,
+                                        color: secondaryColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.008),
+                                    Text(
+                                      cityName,
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.07,
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.012),
+                                    Text(
+                                      description.toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.045,
+                                        color: primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.008),
+                                    Text(
+                                      'H:${highTemp ?? '--'}°  L:${lowTemp ?? '--'}°',
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.04,
+                                        color: secondaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 700),
+                                  child: Icon(
+                                    mapWeatherIcon(iconCode),
+                                    key: ValueKey(iconCode),
+                                    size: screenWidth * 0.22,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'My Location',
+                          SizedBox(height: screenHeight * 0.02),
+                          Center(
+                            child: Text(
+                              '${temp ?? '--'}°',
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.22,
+                                fontWeight: FontWeight.w200,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          // Hourly forecast
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(
+                                screenWidth * 0.03,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.02,
+                              horizontal: screenWidth * 0.03,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: screenWidth * 0.025,
+                                    bottom: screenHeight * 0.015,
+                                  ),
+                                  child: Text(
+                                    "$description. Wind gusts are up to $windSpeed m/s.",
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.035,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: screenWidth * 0.025,
+                                    bottom: screenHeight * 0.01,
+                                  ),
+                                  child: Text(
+                                    'HOURLY FORECAST',
                                     style: TextStyle(
                                       fontSize: screenWidth * 0.035,
                                       color: secondaryColor,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  SizedBox(height: screenHeight * 0.008),
-                                  Text(
-                                    cityName,
-                                    style: TextStyle(
-                                      fontSize: screenWidth * 0.07,
-                                      fontWeight: FontWeight.bold,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.012),
-                                  Text(
-                                    description.toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: screenWidth * 0.045,
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.008),
-                                  Text(
-                                    'H:${highTemp ?? '--'}°  L:${lowTemp ?? '--'}°',
-                                    style: TextStyle(
-                                      fontSize: screenWidth * 0.04,
-                                      color: secondaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 700),
-                                child: Icon(
-                                  mapWeatherIcon(iconCode),
-                                  key: ValueKey(iconCode),
-                                  size: screenWidth * 0.22,
-                                  color: primaryColor,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                                SizedBox(
+                                  height: screenHeight * 0.12,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: vm.hourlyForecast.length,
+                                    itemBuilder: (context, index) {
+                                      final forecast = vm.hourlyForecast[index];
+                                      final time = forecast['dt_txt']
+                                          .toString()
+                                          .split(' ')[1]
+                                          .substring(0, 5);
+                                      final hour = int.parse(
+                                        time.split(':')[0],
+                                      );
+                                      String displayTime;
+                                      if (index == 0) {
+                                        displayTime = 'Now';
+                                      } else if (hour == 0) {
+                                        displayTime = '12AM';
+                                      } else if (hour < 12) {
+                                        displayTime = '${hour}AM';
+                                      } else if (hour == 12) {
+                                        displayTime = '12PM';
+                                      } else {
+                                        displayTime = '${hour - 12}PM';
+                                      }
 
-                        SizedBox(height: screenHeight * 0.02),
-                        Center(
-                          child: Text(
-                            '${temp ?? '--'}°',
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.22,
-                              fontWeight: FontWeight.w200,
-                              color: primaryColor,
+                                      final temp =
+                                          forecast['main']['temp'].round();
+                                      final icon = mapWeatherIcon(
+                                        forecast['weather'][0]['icon'],
+                                      );
+
+                                      return HourlyForecastItem(
+                                        time: displayTime,
+                                        icon: icon,
+                                        temperature: '$temp°',
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-
-                        // Hourly forecast
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(
-                              screenWidth * 0.03,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.02,
-                            horizontal: screenWidth * 0.03,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: screenWidth * 0.025,
-                                  bottom: screenHeight * 0.015,
-                                ),
-                                child: Text(
-                                  "$description. Wind gusts are up to $windSpeed m/s.",
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.035,
-                                    color: primaryColor,
-                                  ),
-                                ),
+                          SizedBox(height: screenHeight * 0.02),
+                          // 7-Day Forecast
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(
+                                screenWidth * 0.03,
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: screenWidth * 0.025,
-                                  bottom: screenHeight * 0.01,
-                                ),
-                                child: Text(
-                                  'HOURLY FORECAST',
+                            ),
+                            padding: EdgeInsets.all(screenWidth * 0.04),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '7-DAY FORECAST',
                                   style: TextStyle(
                                     fontSize: screenWidth * 0.035,
                                     color: secondaryColor,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: screenHeight * 0.12,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: vm.hourlyForecast.length,
-                                  itemBuilder: (context, index) {
-                                    final forecast = vm.hourlyForecast[index];
-                                    final time = forecast['dt_txt']
-                                        .toString()
-                                        .split(' ')[1]
-                                        .substring(0, 5);
-                                    final hour = int.parse(time.split(':')[0]);
-                                    String displayTime;
-                                    if (index == 0) {
-                                      displayTime = 'Now';
-                                    } else if (hour == 0) {
-                                      displayTime = '12AM';
-                                    } else if (hour < 12) {
-                                      displayTime = '${hour}AM';
-                                    } else if (hour == 12) {
-                                      displayTime = '12PM';
-                                    } else {
-                                      displayTime = '${hour - 12}PM';
-                                    }
-
-                                    final temp =
-                                        forecast['main']['temp'].round();
-                                    final icon = mapWeatherIcon(
-                                      forecast['weather'][0]['icon'],
-                                    );
-
-                                    return HourlyForecastItem(
-                                      time: displayTime,
-                                      icon: icon,
-                                      temperature: '$temp°',
-                                    );
-                                  },
+                                SizedBox(height: screenHeight * 0.015),
+                                Column(
+                                  children:
+                                      vm.dailyForecast
+                                          .map(
+                                            (dayData) => DailyForecastItem(
+                                              day: dayData['day'],
+                                              lowTemp: dayData['low'],
+                                              highTemp: dayData['high'],
+                                              icon: mapWeatherIcon(
+                                                dayData['icon'],
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight * 0.02),
-
-                        // 7-Day Forecast
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(
-                              screenWidth * 0.03,
+                              ],
                             ),
                           ),
-                          padding: EdgeInsets.all(screenWidth * 0.04),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '7-DAY FORECAST',
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.035,
-                                  color: secondaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * 0.015),
-                              Column(
-                                children:
-                                    vm.dailyForecast
-                                        .map(
-                                          (dayData) => DailyForecastItem(
-                                            day: dayData['day'],
-                                            lowTemp: dayData['low'],
-                                            highTemp: dayData['high'],
-                                            icon: mapWeatherIcon(
-                                              dayData['icon'],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                      ],
+                          SizedBox(height: screenHeight * 0.02),
+                        ],
+                      ),
                     ),
                   ),
                 ),
