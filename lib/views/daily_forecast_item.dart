@@ -17,8 +17,11 @@ class DailyForecastItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.015),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.white30, width: 0.5)),
       ),
@@ -26,36 +29,47 @@ class DailyForecastItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: 60,
+            width: screenWidth * 0.15, // responsive width for day
             child: Text(
               day,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: screenWidth * 0.04, // responsive font size
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          BoxedIcon(icon, color: Colors.yellowAccent, size: 24),
+          BoxedIcon(
+            icon,
+            color: Colors.yellowAccent,
+            size: screenWidth * 0.06,
+          ), // responsive icon
           SizedBox(
-            width: 100,
+            width: screenWidth * 0.35, // responsive width for temperature row
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
                   '$highTemp°',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04, // responsive font
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
-                const SizedBox(width: 8),
+                SizedBox(width: screenWidth * 0.02), // responsive spacing
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                  size: screenWidth * 0.03,
+                ), // responsive arrow
+                SizedBox(width: screenWidth * 0.02), // responsive spacing
                 Text(
                   '$lowTemp°',
-                  style: const TextStyle(fontSize: 16, color: Colors.white70),
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),

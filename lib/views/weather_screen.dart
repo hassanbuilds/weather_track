@@ -97,6 +97,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return ChangeNotifierProvider(
       create:
           (_) =>
@@ -166,18 +169,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ),
               child: SafeArea(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.05,
+                    vertical: screenHeight * 0.02,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // --- TOP WEATHER HEADER ---
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.025,
+                          vertical: screenHeight * 0.015,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,37 +190,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'My Location',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: screenWidth * 0.035,
                                     color: Colors.white70,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                SizedBox(height: screenHeight * 0.008),
                                 Text(
                                   cityName,
-                                  style: const TextStyle(
-                                    fontSize: 28,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.07,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                SizedBox(height: screenHeight * 0.012),
                                 Text(
                                   description.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.045,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                SizedBox(height: screenHeight * 0.008),
                                 Text(
                                   'H:${highTemp ?? '--'}°  L:${lowTemp ?? '--'}°',
-                                  style: const TextStyle(
-                                    fontSize: 15,
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.04,
                                     color: Colors.white70,
                                   ),
                                 ),
@@ -235,7 +238,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                 key: ValueKey(
                                   vm.currentWeather?['weather']?[0]?['icon'],
                                 ),
-                                size: 90,
+                                size: screenWidth * 0.22,
                                 color: Colors.white,
                               ),
                             ),
@@ -243,58 +246,63 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.02),
                       Center(
                         child: Text(
                           '${temp ?? '--'}°',
-                          style: const TextStyle(
-                            fontSize: 84,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.22,
                             fontWeight: FontWeight.w200,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.02),
 
                       // Hourly forecast
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(
+                            screenWidth * 0.03,
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 12,
+                        padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.02,
+                          horizontal: screenWidth * 0.03,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(
-                                left: 10,
-                                bottom: 12,
+                              padding: EdgeInsets.only(
+                                left: screenWidth * 0.025,
+                                bottom: screenHeight * 0.015,
                               ),
                               child: Text(
                                 "$description. Wind gusts are up to $windSpeed m/s.",
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.035,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10, bottom: 8),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: screenWidth * 0.025,
+                                bottom: screenHeight * 0.01,
+                              ),
                               child: Text(
                                 'HOURLY FORECAST',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: screenWidth * 0.035,
                                   color: Colors.white70,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                             SizedBox(
-                              height: 90,
+                              height: screenHeight * 0.12,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: vm.hourlyForecast.length,
@@ -334,27 +342,29 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.02),
 
                       // 7-Day Forecast
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(
+                            screenWidth * 0.03,
+                          ),
                         ),
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(screenWidth * 0.04),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               '7-DAY FORECAST',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: screenWidth * 0.035,
                                 color: Colors.white70,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: screenHeight * 0.015),
                             Column(
                               children:
                                   vm.dailyForecast
@@ -371,7 +381,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenHeight * 0.02),
                     ],
                   ),
                 ),

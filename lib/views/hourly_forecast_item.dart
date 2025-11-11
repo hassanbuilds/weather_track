@@ -15,32 +15,35 @@ class HourlyForecastItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
-      width: 60, // Reduced from 70 to 60 for better spacing
-      margin: const EdgeInsets.symmetric(horizontal: 6), // Reduced from 8 to 6
+      width: screenWidth * 0.14, // adaptive width
+      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.015),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             time,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: screenWidth * 0.035,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 6), // Reduced from 8 to 6
+          SizedBox(height: screenHeight * 0.008),
           BoxedIcon(
             icon,
             color: Colors.yellowAccent,
-            size: 22,
-          ), // Reduced from 24 to 22
-          const SizedBox(height: 6), // Reduced from 8 to 6
+            size: screenWidth * 0.065,
+          ),
+          SizedBox(height: screenHeight * 0.008),
           Text(
             temperature,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 14, // Reduced from 16 to 14
+              fontSize: screenWidth * 0.035,
               fontWeight: FontWeight.w500,
             ),
           ),
