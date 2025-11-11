@@ -21,33 +21,37 @@ class HourlyForecastItem extends StatelessWidget {
     return Container(
       width: screenWidth * 0.14, // adaptive width
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.015),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            time,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: screenWidth * 0.035,
-              fontWeight: FontWeight.w500,
+      child: FittedBox(
+        fit: BoxFit.scaleDown, // scale down to prevent overflow
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              time,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenWidth * 0.035,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          SizedBox(height: screenHeight * 0.008),
-          BoxedIcon(
-            icon,
-            color: Colors.yellowAccent,
-            size: screenWidth * 0.065,
-          ),
-          SizedBox(height: screenHeight * 0.008),
-          Text(
-            temperature,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: screenWidth * 0.035,
-              fontWeight: FontWeight.w500,
+            SizedBox(height: screenHeight * 0.006),
+            BoxedIcon(
+              icon,
+              color: Colors.yellowAccent,
+              size: screenWidth * 0.065,
             ),
-          ),
-        ],
+            SizedBox(height: screenHeight * 0.006),
+            Text(
+              temperature,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenWidth * 0.035,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
