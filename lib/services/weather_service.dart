@@ -1,13 +1,26 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../scerets.dart';
+import '../scerets.dart'; // Your API key
 
 class WeatherService {
-  Future<Map<String, dynamic>?> fetchWeather() async {
-    const cityName = 'Lahore';
-    final url = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/weather?q=$cityName,pk&appid=$openWeatherApiKey&units=metric',
-    );
+  Future<Map<String, dynamic>?> fetchWeather({
+    double? lat,
+    double? lon,
+    String? city,
+  }) async {
+    String urlString;
+
+    if (city != null && city.isNotEmpty) {
+      urlString =
+          'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$openWeatherApiKey&units=metric';
+    } else if (lat != null && lon != null) {
+      urlString =
+          'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$openWeatherApiKey&units=metric';
+    } else {
+      return null;
+    }
+
+    final url = Uri.parse(urlString);
 
     try {
       final res = await http.get(url);

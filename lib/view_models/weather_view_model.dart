@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../services/weather_service.dart';
 
 class WeatherViewModel extends ChangeNotifier {
@@ -9,12 +10,12 @@ class WeatherViewModel extends ChangeNotifier {
 
   final WeatherService _weatherService = WeatherService();
 
-  Future<void> getWeatherData() async {
-    final data = await _weatherService.fetchWeather();
+  // Fetch weather by city
+  Future<void> getWeatherData({required String city}) async {
+    final data = await _weatherService.fetchWeather(city: city);
     if (data != null) {
       currentWeather = data;
 
-      // Dummy hourly forecast
       hourlyForecast = List.generate(
         6,
         (index) => {
@@ -27,18 +28,68 @@ class WeatherViewModel extends ChangeNotifier {
       );
 
       dailyForecast = _getNextSevenDays();
+    } else {
+      currentWeather = {};
+      hourlyForecast = [];
+      dailyForecast = [];
+    }
+    notifyListeners();
+  }
+
+  // Fetch weather using current device location
+  Future<void> getWeatherDataWithLocation(
+    Future<Position?> Function() getCurrentLocation,
+  ) async {
+    Position? position = await getCurrentLocation();
+    if (position != null) {
+      final data = await _weatherService.fetchWeather(
+        lat: position.latitude,
+        lon: position.longitude,
+      );
+
+      if (data != null) {
+        currentWeather = data;
+
+        hourlyForecast = List.generate(
+          6,
+          (index) => {
+            'dt_txt': '2023-01-01 ${10 + index}:00:00',
+            'main': {'temp': (data['main']['temp'] + index).round()},
+            'weather': [
+              {'icon': data['weather'][0]['icon']},
+            ],
+          },
+        );
+
+        dailyForecast = _getNextSevenDays();
+      } else {
+        currentWeather = {};
+        hourlyForecast = [];
+        dailyForecast = [];
+      }
+      notifyListeners();
+    } else {
+      currentWeather = {};
+      hourlyForecast = [];
+      dailyForecast = [];
       notifyListeners();
     }
   }
 
+  // Refresh current data
   Future<void> refreshData() async {
     isRefreshing = true;
     notifyListeners();
-    await getWeatherData();
+
+    if (currentWeather != null && currentWeather!['name'] != null) {
+      await getWeatherData(city: currentWeather!['name']);
+    }
+
     isRefreshing = false;
     notifyListeners();
   }
 
+  // Dummy 7-day forecast
   List<Map<String, dynamic>> _getNextSevenDays() {
     List<String> dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     List<int> lowTemps = [59, 59, 59, 63, 65, 67, 69];

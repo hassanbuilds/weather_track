@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:weather_track/view_models/weather_view_model.dart';
-import 'hourly_forecast_item.dart';
 import 'daily_forecast_item.dart';
+import 'hourly_forecast_item.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  final TextEditingController _cityController = TextEditingController();
 
   IconData mapWeatherIcon(String iconCode) {
     switch (iconCode) {
@@ -45,13 +53,58 @@ class WeatherScreen extends StatelessWidget {
     }
   }
 
+  Future<Position?> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return null;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return null;
+    }
+    if (permission == LocationPermission.deniedForever) return null;
+
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
+  void _changeCityDialog(WeatherViewModel vm) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Enter City Name"),
+            content: TextField(
+              controller: _cityController,
+              decoration: const InputDecoration(hintText: "City name"),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  final cityName = _cityController.text.trim();
+                  if (cityName.isNotEmpty) {
+                    vm.getWeatherData(city: cityName);
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WeatherViewModel()..getWeatherData(),
+      create:
+          (_) =>
+              WeatherViewModel()
+                ..getWeatherDataWithLocation(_getCurrentLocation),
       child: Consumer<WeatherViewModel>(
         builder: (context, vm, child) {
-          if (vm.currentWeather == null) {
+          if (vm.currentWeather == null || vm.currentWeather!.isEmpty) {
             return Scaffold(
               backgroundColor: Colors.transparent,
               body: Container(
@@ -78,6 +131,8 @@ class WeatherScreen extends StatelessWidget {
               vm.currentWeather?['weather']?[0]?['description'] ?? '';
           final highTemp = vm.currentWeather?['main']?['temp_max']?.round();
           final lowTemp = vm.currentWeather?['main']?['temp_min']?.round();
+          final windSpeed = vm.currentWeather?['wind']?['speed'] ?? '--';
+          final cityName = vm.currentWeather?['name'] ?? 'Location';
 
           return Scaffold(
             backgroundColor: Colors.transparent,
@@ -92,6 +147,10 @@ class WeatherScreen extends StatelessWidget {
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Icon(Icons.refresh, color: Colors.white),
                   onPressed: vm.isRefreshing ? null : vm.refreshData,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.search, color: Colors.white),
+                  onPressed: () => _changeCityDialog(vm),
                 ),
               ],
             ),
@@ -114,26 +173,77 @@ class WeatherScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 10),
-                      const Text(
-                        'My Location',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
+                      // --- TOP WEATHER HEADER ---
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Lahore, Pakistan',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Left side — text info
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'My Location',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  cityName,
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  description.toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'H:${highTemp ?? '--'}°  L:${lowTemp ?? '--'}°',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
 
+                            // Right side — dynamic weather icon
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 700),
+                              child: Icon(
+                                mapWeatherIcon(
+                                  vm.currentWeather?['weather']?[0]?['icon'] ??
+                                      '',
+                                ),
+                                key: ValueKey(
+                                  vm.currentWeather?['weather']?[0]?['icon'],
+                                ),
+                                size: 90,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
                       Center(
                         child: Text(
                           '${temp ?? '--'}°',
@@ -144,31 +254,9 @@ class WeatherScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-
-                      Center(
-                        child: Text(
-                          description.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-
-                      Center(
-                        child: Text(
-                          'H:${highTemp ?? '--'}° L:${lowTemp ?? '--'}°',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 20),
 
-                      // Hourly forecast section
+                      // Hourly forecast
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.2),
@@ -181,11 +269,14 @@ class WeatherScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10, bottom: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                bottom: 12,
+                              ),
                               child: Text(
-                                'Sunny conditions will continue all day. Wind gusts are up to 12 km/h.',
-                                style: TextStyle(
+                                "$description. Wind gusts are up to $windSpeed m/s.",
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.white,
                                 ),
@@ -215,7 +306,6 @@ class WeatherScreen extends StatelessWidget {
                                       .substring(0, 5);
                                   final hour = int.parse(time.split(':')[0]);
                                   String displayTime;
-
                                   if (index == 0) {
                                     displayTime = 'Now';
                                   } else if (hour == 0) {
@@ -246,7 +336,7 @@ class WeatherScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // 7-Day Forecast section
+                      // 7-Day Forecast
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.2),
@@ -267,19 +357,20 @@ class WeatherScreen extends StatelessWidget {
                             const SizedBox(height: 12),
                             Column(
                               children:
-                                  vm.dailyForecast.map((dayData) {
-                                    return DailyForecastItem(
-                                      day: dayData['day'],
-                                      lowTemp: dayData['low'],
-                                      highTemp: dayData['high'],
-                                      icon: mapWeatherIcon(dayData['icon']),
-                                    );
-                                  }).toList(),
+                                  vm.dailyForecast
+                                      .map(
+                                        (dayData) => DailyForecastItem(
+                                          day: dayData['day'],
+                                          lowTemp: dayData['low'],
+                                          highTemp: dayData['high'],
+                                          icon: mapWeatherIcon(dayData['icon']),
+                                        ),
+                                      )
+                                      .toList(),
                             ),
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 20),
                     ],
                   ),
