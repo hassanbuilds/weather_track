@@ -488,7 +488,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 ),
                 WeatherEffect(mainWeather: mainWeather, isDay: isDay),
 
-                // ✅ OFFLINE BANNER (sticky)
+                //  OFFLINE BANNER (sticky)
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
                   top: 0,
