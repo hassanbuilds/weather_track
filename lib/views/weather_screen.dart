@@ -1,5 +1,3 @@
-// --- WEATHER SCREEN ---
-// All imports remain the same
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
