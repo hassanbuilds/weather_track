@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../scerets.dart'; // Your API key
+import '../scerets.dart';
 
 class WeatherService {
   Future<Map<String, dynamic>?> fetchWeather({
