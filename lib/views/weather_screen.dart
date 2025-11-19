@@ -519,7 +519,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // --- TOP WEATHER HEADER ---
+                          // TOP WEATHER HEADER
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.025,
