@@ -15,19 +15,19 @@ class WeatherViewModel extends ChangeNotifier {
 
   final WeatherService _weatherService = WeatherService();
 
-  // --- Check internet connection
+  // Check internet connection
   Future<bool> _hasInternetConnection() async {
     final result = await Connectivity().checkConnectivity();
     return result != ConnectivityResult.none;
   }
 
-  // --- Save weather + forecasts to cache
+  // Save weather + forecasts to cache
   Future<void> _saveCachedWeather(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('cached_weather', jsonEncode(data));
   }
 
-  // --- Load weather + forecasts from cache
+  // Load weather + forecasts from cache
   Future<Map<String, dynamic>?> _loadCachedWeather() async {
     final prefs = await SharedPreferences.getInstance();
     final cached = prefs.getString('cached_weather');
@@ -37,7 +37,7 @@ class WeatherViewModel extends ChangeNotifier {
     return null;
   }
 
-  // --- Fetch weather by city
+  // Fetch weather by city
   Future<void> getWeatherData({required String city}) async {
     final hasConnection = await _hasInternetConnection();
 
@@ -59,7 +59,7 @@ class WeatherViewModel extends ChangeNotifier {
         currentWeather = {};
       }
     } else {
-      // Offline → load cached
+      // Offline  load cached
       final cached = await _loadCachedWeather();
       if (cached != null) {
         currentWeather = cached['currentWeather'];
@@ -75,7 +75,7 @@ class WeatherViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Fetch weather by location
+  // Fetch weather by location
   Future<void> getWeatherDataWithLocation(
     Future<Position?> Function() getCurrentLocation,
   ) async {
@@ -138,7 +138,7 @@ class WeatherViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Refresh
+  //  Refresh
   Future<void> refreshData() async {
     isRefreshing = true;
     notifyListeners();
@@ -151,7 +151,7 @@ class WeatherViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Generate dummy 6-hour forecast for demo
+  //  Generate dummy 6-hour forecast for demo
   List<Map<String, dynamic>> _generateHourlyForecast(
     Map<String, dynamic> data,
   ) {
@@ -167,7 +167,7 @@ class WeatherViewModel extends ChangeNotifier {
     );
   }
 
-  // --- Dummy 7-day forecast
+  // Dummy 7-day forecast
   List<Map<String, dynamic>> _getNextSevenDays() {
     List<String> dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     List<int> lowTemps = [59, 59, 59, 63, 65, 67, 69];
