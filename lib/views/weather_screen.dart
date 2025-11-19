@@ -7,10 +7,10 @@ import 'daily_forecast_item.dart';
 import 'hourly_forecast_item.dart';
 import 'dart:math';
 
-// --- OFFLINE BANNER HEIGHT ---
+// OFFLINE BANNER HEIGHT
 const double offlineBannerHeight = 30;
 
-// --- DYNAMIC GRADIENT FUNCTION ---
+// DYNAMIC GRADIENT FUNCTION
 LinearGradient getWeatherGradient(String main, bool isDay) {
   switch (main) {
     case 'Clear':
@@ -64,7 +64,7 @@ LinearGradient getWeatherGradient(String main, bool isDay) {
   }
 }
 
-// --- WEATHER EFFECTS WIDGET ---
+// WEATHER EFFECTS WIDGET
 class WeatherEffect extends StatelessWidget {
   final String mainWeather;
   final bool isDay;
@@ -94,7 +94,7 @@ class WeatherEffect extends StatelessWidget {
   }
 }
 
-// --- EFFECTS IMPLEMENTATION ---
+// EFFECTS IMPLEMENTATION
 class SunEffect extends StatelessWidget {
   const SunEffect({super.key});
   @override
@@ -294,7 +294,7 @@ class ThunderEffect extends StatelessWidget {
   }
 }
 
-// --- WEATHER SCREEN ---
+//  WEATHER SCREEN
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
